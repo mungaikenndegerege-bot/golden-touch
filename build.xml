@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="GoldenTouch" default="jar" basedir=".">
+  <description>Golden Touch — Beauty &amp; Jewellery Shop Management System</description>
+
+  <property name="src.dir"     value="src"/>
+  <property name="build.dir"   value="build/classes"/>
+  <property name="dist.dir"    value="dist"/>
+  <property name="lib.dir"     value="lib"/>
+  <property name="web.dir"     value="web"/>
+  <property name="jar.name"    value="GoldenTouch.jar"/>
+  <property name="main.class"  value="golden.touch.ShopApiServer"/>
+
+  <!-- Classpath: all JARs in lib/ -->
+  <path id="compile.classpath">
+    <fileset dir="${lib.dir}" includes="*.jar"/>
+  </path>
+
+  <target name="clean">
+    <delete dir="${build.dir}"/>
+    <delete dir="${dist.dir}"/>
+  </target>
+
+  <target name="init" depends="clean">
+    <mkdir dir="${build.dir}"/>
+    <mkdir dir="${dist.dir}"/>
+  </target>
+
+  <target name="compile" depends="init">
+    <javac srcdir="${src.dir}"
+           destdir="${build.dir}"
+           classpathref="compile.classpath"
+           includeantruntime="false"
+           source="1.8" target="1.8"
+           encoding="UTF-8"/>
+  </target>
+
+  <target name="jar" depends="compile">
+    <!-- Copy web assets into the JAR so Javalin can serve them -->
+    <copy todir="${build.dir}/web">
+      <fileset dir="${web.dir}"/>
+    </copy>
+
+    <jar destfile="${dist.dir}/${jar.name}" basedir="${build.dir}">
+      <manifest>
+        <attribute name="Main-Class" value="${main.class}"/>
+        <attribute name="Class-Path" value="${toString:jar.classpath}"/>
+      </manifest>
+    </jar>
+
+    <!-- Build a fat JAR classpath string for the manifest -->
+    <pathconvert property="jar.classpath" pathsep=" " refid="compile.classpath">
+      <mapper type="flatten"/>
+      <mapper type="glob" from="*" to="../lib/*"/>
+    </pathconvert>
+
+    <echo>
+    ============================================
+      Build complete!
+      JAR: dist/${jar.name}
+      Run: java -cp "dist/${jar.name};lib/*" ${main.class}
+      Then open: http://localhost:7071
+    ============================================
+    </echo>
+  </target>
+</project>

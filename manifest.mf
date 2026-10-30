@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Main-Class: golden.touch.ShopApiServer
+X-COMMENT: Golden Touch — Beauty & Jewellery Shop
+

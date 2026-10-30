@@ -1,0 +1,14 @@
+# Build output
+build/
+dist/
+
+# NetBeans private files
+nbproject/private/
+
+# Data file (never commit shop data to git)
+*.dat
+*.dat.corrupt_*
+
+# OS noise
+.DS_Store
+Thumbs.db
