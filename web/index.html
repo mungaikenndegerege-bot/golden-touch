@@ -10,290 +10,364 @@
 </head>
 <body>
 
-  <header>
-    <div class="header-inner">
+  <!-- ═══════════════════════════════════════════════════════════
+       TOP BAR  (like Jumia's orange header)
+       ═══════════════════════════════════════════════════════════ -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <!-- Logo -->
       <div class="logo">
         <span class="logo-icon">💄</span>
         <span class="logo-text">Golden Touch</span>
       </div>
-      <nav id="main-nav">
-        <button class="nav-btn active" data-tab="dashboard">Dashboard</button>
-        <button class="nav-btn" data-tab="pos">New Sale</button>
-        <button class="nav-btn" data-tab="sales">Sales History</button>
-        <button class="nav-btn" data-tab="products">Products</button>
-        <button class="nav-btn" data-tab="stock">Restock</button>
-        <button class="nav-btn" data-tab="customers">Customers</button>
-        <button class="nav-btn" data-tab="suppliers">Suppliers</button>
-        <button class="nav-btn" data-tab="expenses">Expenses</button>
-        <button class="nav-btn" data-tab="staff">Staff</button>
-        <button class="nav-btn" data-tab="report">Reports</button>
-        <button class="nav-btn" data-tab="settings">⚙ Settings</button>
-      </nav>
-      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme" title="Toggle light / dark mode">
-        <span id="theme-icon">🌙</span>
-      </button>
+
+      <!-- Centre search-style tagline -->
+      <div class="topbar-centre">
+        <span class="topbar-tagline">Beauty &amp; Jewellery Shop</span>
+      </div>
+
+      <!-- Right actions -->
+      <div class="topbar-right">
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme" title="Toggle light / dark mode">
+          <span id="theme-icon">🌙</span>
+        </button>
+        <!-- Hamburger for mobile -->
+        <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Open menu" title="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
     </div>
   </header>
 
-  <main id="app">
+  <!-- ═══════════════════════════════════════════════════════════
+       SHELL  =  SIDEBAR  +  CONTENT
+       ═══════════════════════════════════════════════════════════ -->
+  <div class="shell">
 
-    <!-- ===== DASHBOARD ===== -->
-    <section id="tab-dashboard" class="tab active">
-      <h2 class="page-title">Dashboard</h2>
-      <div id="dash-stats" class="stat-grid">
-        <div class="stat-card pink"><div class="stat-label">Today's Revenue</div><div class="stat-value" id="d-today-rev">—</div></div>
-        <div class="stat-card"><div class="stat-label">Today's Sales</div><div class="stat-value" id="d-today-sales">—</div></div>
-        <div class="stat-card green"><div class="stat-label">Month Revenue</div><div class="stat-value" id="d-month-rev">—</div></div>
-        <div class="stat-card gold"><div class="stat-label">Month Gross Profit</div><div class="stat-value" id="d-gross">—</div></div>
-        <div class="stat-card red"><div class="stat-label">Month Expenses</div><div class="stat-value" id="d-expenses">—</div></div>
-        <div class="stat-card" id="d-net-card"><div class="stat-label">Month Net</div><div class="stat-value" id="d-net">—</div></div>
-      </div>
+    <!-- ── SIDEBAR (like Jumia's left category panel) ── -->
+    <aside class="sidebar" id="sidebar">
+      <nav id="main-nav">
+        <button class="nav-btn active" data-tab="dashboard">
+          <span class="nav-icon">🏠</span>
+          <span class="nav-label">Dashboard</span>
+        </button>
+        <button class="nav-btn" data-tab="pos">
+          <span class="nav-icon">🛒</span>
+          <span class="nav-label">New Sale</span>
+        </button>
+        <button class="nav-btn" data-tab="sales">
+          <span class="nav-icon">📋</span>
+          <span class="nav-label">Sales History</span>
+        </button>
 
-      <div id="payroll-notice" class="payroll-notice" style="display:none">
-        <span id="payroll-notice-text"></span>
-        <button class="btn-primary btn-sm" onclick="openModal('payroll-modal')">🔐 Authorise Payroll</button>
-      </div>
+        <div class="nav-divider">Inventory</div>
 
-      <div class="dash-row">
-        <div class="dash-box">
-          <h3>📊 This Month Breakdown</h3>
-          <table class="simple-table">
-            <tr><td>Revenue</td><td class="money" id="db-revenue">—</td></tr>
-            <tr><td>Cost of Goods Sold</td><td class="money" id="db-cogs">—</td></tr>
-            <tr><td>Gross Profit</td><td class="money" id="db-gross">—</td></tr>
-            <tr><td>Expenses</td><td class="money" id="db-expenses">—</td></tr>
-            <tr><td>Authorised Payroll</td><td class="money" id="db-payroll">—</td></tr>
-            <tr><td style="color:var(--amber);font-size:.82rem">Pending Payroll</td><td class="money" id="db-pending" style="color:var(--amber)">—</td></tr>
-            <tr class="total-row"><td>NET PROFIT / (LOSS)</td><td class="money" id="db-net">—</td></tr>
+        <button class="nav-btn" data-tab="products">
+          <span class="nav-icon">💄</span>
+          <span class="nav-label">Products</span>
+        </button>
+        <button class="nav-btn" data-tab="stock">
+          <span class="nav-icon">📦</span>
+          <span class="nav-label">Restock</span>
+        </button>
+
+        <div class="nav-divider">People</div>
+
+        <button class="nav-btn" data-tab="customers">
+          <span class="nav-icon">👥</span>
+          <span class="nav-label">Customers</span>
+        </button>
+        <button class="nav-btn" data-tab="suppliers">
+          <span class="nav-icon">🚚</span>
+          <span class="nav-label">Suppliers</span>
+        </button>
+        <button class="nav-btn" data-tab="staff">
+          <span class="nav-icon">👤</span>
+          <span class="nav-label">Staff</span>
+        </button>
+
+        <div class="nav-divider">Finance</div>
+
+        <button class="nav-btn" data-tab="expenses">
+          <span class="nav-icon">💸</span>
+          <span class="nav-label">Expenses</span>
+        </button>
+        <button class="nav-btn" data-tab="report">
+          <span class="nav-icon">📊</span>
+          <span class="nav-label">Reports</span>
+        </button>
+
+        <div class="nav-divider"></div>
+
+        <button class="nav-btn" data-tab="settings">
+          <span class="nav-icon">⚙️</span>
+          <span class="nav-label">Settings</span>
+        </button>
+      </nav>
+    </aside>
+
+    <!-- Overlay for mobile sidebar -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <!-- ── MAIN CONTENT ── -->
+    <main id="app">
+
+      <!-- ===== DASHBOARD ===== -->
+      <section id="tab-dashboard" class="tab active">
+        <h2 class="page-title">Dashboard</h2>
+        <div id="dash-stats" class="stat-grid">
+          <div class="stat-card pink"><div class="stat-label">Today's Revenue</div><div class="stat-value" id="d-today-rev">—</div></div>
+          <div class="stat-card"><div class="stat-label">Today's Sales</div><div class="stat-value" id="d-today-sales">—</div></div>
+          <div class="stat-card green"><div class="stat-label">Month Revenue</div><div class="stat-value" id="d-month-rev">—</div></div>
+          <div class="stat-card gold"><div class="stat-label">Month Gross Profit</div><div class="stat-value" id="d-gross">—</div></div>
+          <div class="stat-card red"><div class="stat-label">Month Expenses</div><div class="stat-value" id="d-expenses">—</div></div>
+          <div class="stat-card" id="d-net-card"><div class="stat-label">Month Net</div><div class="stat-value" id="d-net">—</div></div>
+        </div>
+
+        <div id="payroll-notice" class="payroll-notice" style="display:none">
+          <span id="payroll-notice-text"></span>
+          <button class="btn-primary btn-sm" onclick="openModal('payroll-modal')">🔐 Authorise Payroll</button>
+        </div>
+
+        <div class="dash-row">
+          <div class="dash-box">
+            <h3>📊 This Month Breakdown</h3>
+            <table class="simple-table">
+              <tr><td>Revenue</td><td class="money" id="db-revenue">—</td></tr>
+              <tr><td>Cost of Goods Sold</td><td class="money" id="db-cogs">—</td></tr>
+              <tr><td>Gross Profit</td><td class="money" id="db-gross">—</td></tr>
+              <tr><td>Expenses</td><td class="money" id="db-expenses">—</td></tr>
+              <tr><td>Authorised Payroll</td><td class="money" id="db-payroll">—</td></tr>
+              <tr><td style="color:var(--amber);font-size:.82rem">Pending Payroll</td><td class="money" id="db-pending" style="color:var(--amber)">—</td></tr>
+              <tr class="total-row"><td>NET PROFIT / (LOSS)</td><td class="money" id="db-net">—</td></tr>
+            </table>
+          </div>
+          <div class="dash-box">
+            <h3>⚠️ Low Stock Alerts</h3>
+            <div id="low-stock-list"><p class="muted">Loading…</p></div>
+          </div>
+        </div>
+
+        <div class="dash-box" style="margin-top:18px">
+          <h3>🏆 Top Products This Month</h3>
+          <div id="top-products-list"><p class="muted">Loading…</p></div>
+        </div>
+      </section>
+
+      <!-- ===== POS / NEW SALE ===== -->
+      <section id="tab-pos" class="tab">
+        <div class="tab-header">
+          <h2>New Sale</h2>
+        </div>
+        <div class="pos-layout">
+          <div class="pos-left">
+            <div class="pos-search-bar">
+              <input type="text" id="pos-search" placeholder="🔍 Search products by name, brand, category…" oninput="filterPosProducts()" />
+              <select id="pos-cat-filter" onchange="filterPosProducts()">
+                <option value="">All Categories</option>
+              </select>
+            </div>
+            <div id="pos-product-grid" class="pos-product-grid"></div>
+          </div>
+          <div class="pos-right">
+            <div class="pos-cart-header">
+              <h3>🛒 Cart</h3>
+              <button class="btn-secondary btn-sm" onclick="clearCart()">Clear</button>
+            </div>
+            <div id="pos-cart-items" class="pos-cart-items"></div>
+            <div class="pos-cart-summary">
+              <div class="cart-row"><span>Subtotal</span><span id="cart-subtotal">KSh 0.00</span></div>
+              <div class="cart-row">
+                <span>Discount (KSh)</span>
+                <input type="number" id="cart-discount" min="0" value="0" step="1" onchange="updateCartTotals()" style="width:90px;text-align:right;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:4px 8px;color:inherit;font-size:.9rem" />
+              </div>
+              <div class="cart-row total"><span>TOTAL</span><span id="cart-total">KSh 0.00</span></div>
+            </div>
+            <div class="pos-sale-details">
+              <label>Customer
+                <select id="pos-customer">
+                  <option value="0">Walk-in Customer</option>
+                </select>
+              </label>
+              <label>Payment Method
+                <div class="payment-btns" id="payment-btns">
+                  <button type="button" class="pay-btn active" data-method="Cash" onclick="selectPayment('Cash')">💵 Cash</button>
+                  <button type="button" class="pay-btn" data-method="MPesa" onclick="selectPayment('MPesa')">📱 M-Pesa</button>
+                  <button type="button" class="pay-btn" data-method="Card" onclick="selectPayment('Card')">💳 Card</button>
+                </div>
+              </label>
+            </div>
+            <button class="btn-primary pos-checkout-btn" onclick="checkoutSale()">✅ Complete Sale</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== SALES HISTORY ===== -->
+      <section id="tab-sales" class="tab">
+        <div class="tab-header">
+          <h2>Sales History</h2>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+            <input type="date" id="sales-filter-date" onchange="loadSales()" style="padding:7px 12px;border:1px solid rgba(255,255,255,.2);border-radius:20px;background:rgba(255,255,255,.08);color:inherit;font-size:.88rem" />
+            <button class="btn-secondary btn-sm" onclick="document.getElementById('sales-filter-date').value='';loadSales()">Clear Filter</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table id="sales-table">
+            <thead><tr>
+              <th>#</th><th>Date</th><th>Time</th><th>Customer</th>
+              <th>Items</th><th>Payment</th><th class="money">Total</th><th>Status</th><th>Actions</th>
+            </tr></thead>
+            <tbody id="sales-tbody"></tbody>
           </table>
         </div>
-        <div class="dash-box">
-          <h3>⚠️ Low Stock Alerts</h3>
-          <div id="low-stock-list"><p class="muted">Loading…</p></div>
-        </div>
-      </div>
+      </section>
 
-      <div class="dash-box" style="margin-top:18px">
-        <h3>🏆 Top Products This Month</h3>
-        <div id="top-products-list"><p class="muted">Loading…</p></div>
-      </div>
-    </section>
-
-    <!-- ===== POS / NEW SALE ===== -->
-    <section id="tab-pos" class="tab">
-      <div class="tab-header">
-        <h2>New Sale</h2>
-      </div>
-      <div class="pos-layout">
-        <!-- Product picker -->
-        <div class="pos-left">
-          <div class="pos-search-bar">
-            <input type="text" id="pos-search" placeholder="🔍 Search products by name, brand, category…" oninput="filterPosProducts()" />
-            <select id="pos-cat-filter" onchange="filterPosProducts()">
+      <!-- ===== PRODUCTS ===== -->
+      <section id="tab-products" class="tab">
+        <div class="tab-header">
+          <h2>Products</h2>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <select id="product-cat-filter" onchange="renderProducts()" style="padding:7px 12px;border:1px solid rgba(255,255,255,.2);border-radius:20px;background:rgba(255,255,255,.08);color:inherit;font-size:.88rem">
               <option value="">All Categories</option>
             </select>
+            <button class="btn-primary" onclick="openModal('product-modal')">+ Add Product</button>
           </div>
-          <div id="pos-product-grid" class="pos-product-grid"></div>
         </div>
-        <!-- Cart -->
-        <div class="pos-right">
-          <div class="pos-cart-header">
-            <h3>🛒 Cart</h3>
-            <button class="btn-secondary btn-sm" onclick="clearCart()">Clear</button>
+        <div class="table-wrap">
+          <table id="products-table">
+            <thead><tr>
+              <th>Name</th><th>Category</th><th>Brand</th><th>SKU</th>
+              <th class="money">Cost</th><th class="money">Price</th>
+              <th>Stock</th><th>Status</th><th>Actions</th>
+            </tr></thead>
+            <tbody id="products-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== RESTOCK ===== -->
+      <section id="tab-stock" class="tab">
+        <div class="tab-header">
+          <h2>Stock Receipts</h2>
+          <button class="btn-primary" onclick="openModal('stock-modal')">+ Record Restock</button>
+        </div>
+        <div class="table-wrap">
+          <table id="stock-table">
+            <thead><tr>
+              <th>Date</th><th>Product</th><th>Supplier</th>
+              <th>Qty</th><th class="money">Unit Cost</th><th class="money">Total</th>
+              <th>Invoice Ref</th><th>Actions</th>
+            </tr></thead>
+            <tbody id="stock-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== CUSTOMERS ===== -->
+      <section id="tab-customers" class="tab">
+        <div class="tab-header">
+          <h2>Customers</h2>
+          <button class="btn-primary" onclick="openModal('customer-modal')">+ Add Customer</button>
+        </div>
+        <div class="table-wrap">
+          <table id="customers-table">
+            <thead><tr>
+              <th>Name</th><th>Phone</th><th>Email</th><th>Since</th><th>Notes</th><th>Actions</th>
+            </tr></thead>
+            <tbody id="customers-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== SUPPLIERS ===== -->
+      <section id="tab-suppliers" class="tab">
+        <div class="tab-header">
+          <h2>Suppliers</h2>
+          <button class="btn-primary" onclick="openModal('supplier-modal')">+ Add Supplier</button>
+        </div>
+        <div class="table-wrap">
+          <table id="suppliers-table">
+            <thead><tr>
+              <th>Name</th><th>Phone</th><th>Email</th><th>Address</th><th>Notes</th><th>Actions</th>
+            </tr></thead>
+            <tbody id="suppliers-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== EXPENSES ===== -->
+      <section id="tab-expenses" class="tab">
+        <div class="tab-header">
+          <h2>Expenses</h2>
+          <button class="btn-primary" onclick="openModal('expense-modal')">+ Add Expense</button>
+        </div>
+        <div class="table-wrap">
+          <table id="expenses-table">
+            <thead><tr>
+              <th>Date</th><th>Category</th><th>Description</th>
+              <th>Paid By</th><th>Reference</th><th class="money">Amount</th><th>Actions</th>
+            </tr></thead>
+            <tbody id="expenses-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== STAFF ===== -->
+      <section id="tab-staff" class="tab">
+        <div class="tab-header">
+          <h2>Staff</h2>
+          <button class="btn-primary" onclick="openModal('staff-modal')">+ Add Staff</button>
+        </div>
+        <div class="table-wrap">
+          <table id="staff-table">
+            <thead><tr>
+              <th>Name</th><th>Role</th><th>Phone</th><th>ID No.</th>
+              <th class="money">Monthly Salary</th><th>Status</th><th>Actions</th>
+            </tr></thead>
+            <tbody id="staff-tbody"></tbody>
+          </table>
+        </div>
+        <div class="table-footer" id="staff-total"></div>
+      </section>
+
+      <!-- ===== REPORTS ===== -->
+      <section id="tab-report" class="tab">
+        <div class="tab-header">
+          <h2>Monthly Report</h2>
+          <div class="report-controls">
+            <select id="report-month"></select>
+            <select id="report-year"></select>
+            <button class="btn-primary" onclick="loadReport()">Generate</button>
+            <button class="btn-secondary" onclick="exportReportPdf()">🖨 Export PDF</button>
+            <button class="btn-secondary" onclick="exportReportCsv()">⬇ Export CSV</button>
           </div>
-          <div id="pos-cart-items" class="pos-cart-items"></div>
-          <div class="pos-cart-summary">
-            <div class="cart-row"><span>Subtotal</span><span id="cart-subtotal">KSh 0.00</span></div>
-            <div class="cart-row">
-              <span>Discount (KSh)</span>
-              <input type="number" id="cart-discount" min="0" value="0" step="1" onchange="updateCartTotals()" style="width:90px;text-align:right;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:4px 8px;color:inherit;font-size:.9rem" />
+        </div>
+        <div id="report-content"><p class="muted">Select a month and click Generate.</p></div>
+      </section>
+
+      <!-- ===== SETTINGS ===== -->
+      <section id="tab-settings" class="tab">
+        <div class="tab-header"><h2>Settings</h2></div>
+        <div class="settings-card">
+          <h3>Shop Details</h3>
+          <form id="settings-form" onsubmit="saveSettings(event)">
+            <label>Shop Name <input type="text" id="set-name" required /></label>
+            <label>M-Pesa Number
+              <input type="text" id="set-mpesa" required placeholder="e.g. 0723432205" />
+              <span class="field-hint">This number is shown to customers when they pay via M-Pesa</span>
+            </label>
+            <div class="modal-actions" style="justify-content:flex-start;margin-top:4px">
+              <button type="submit" class="btn-primary">Save Settings</button>
             </div>
-            <div class="cart-row total"><span>TOTAL</span><span id="cart-total">KSh 0.00</span></div>
-          </div>
-          <div class="pos-sale-details">
-            <label>Customer
-              <select id="pos-customer">
-                <option value="0">Walk-in Customer</option>
-              </select>
-            </label>
-            <label>Payment Method
-              <div class="payment-btns" id="payment-btns">
-                <button type="button" class="pay-btn active" data-method="Cash" onclick="selectPayment('Cash')">💵 Cash</button>
-                <button type="button" class="pay-btn" data-method="MPesa" onclick="selectPayment('MPesa')">📱 M-Pesa</button>
-                <button type="button" class="pay-btn" data-method="Card" onclick="selectPayment('Card')">💳 Card</button>
-              </div>
-            </label>
-          </div>
-          <button class="btn-primary pos-checkout-btn" onclick="checkoutSale()">✅ Complete Sale</button>
+          </form>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- ===== SALES HISTORY ===== -->
-    <section id="tab-sales" class="tab">
-      <div class="tab-header">
-        <h2>Sales History</h2>
-        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-          <input type="date" id="sales-filter-date" onchange="loadSales()" style="padding:7px 12px;border:1px solid rgba(255,255,255,.2);border-radius:20px;background:rgba(255,255,255,.08);color:inherit;font-size:.88rem" />
-          <button class="btn-secondary btn-sm" onclick="document.getElementById('sales-filter-date').value='';loadSales()">Clear Filter</button>
-        </div>
-      </div>
-      <div class="table-wrap">
-        <table id="sales-table">
-          <thead><tr>
-            <th>#</th><th>Date</th><th>Time</th><th>Customer</th>
-            <th>Items</th><th>Payment</th><th class="money">Total</th><th>Status</th><th>Actions</th>
-          </tr></thead>
-          <tbody id="sales-tbody"></tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- ===== PRODUCTS ===== -->
-    <section id="tab-products" class="tab">
-      <div class="tab-header">
-        <h2>Products</h2>
-        <div style="display:flex;gap:10px;flex-wrap:wrap">
-          <select id="product-cat-filter" onchange="renderProducts()" style="padding:7px 12px;border:1px solid rgba(255,255,255,.2);border-radius:20px;background:rgba(255,255,255,.08);color:inherit;font-size:.88rem">
-            <option value="">All Categories</option>
-          </select>
-          <button class="btn-primary" onclick="openModal('product-modal')">+ Add Product</button>
-        </div>
-      </div>
-      <div class="table-wrap">
-        <table id="products-table">
-          <thead><tr>
-            <th>Name</th><th>Category</th><th>Brand</th><th>SKU</th>
-            <th class="money">Cost</th><th class="money">Price</th>
-            <th>Stock</th><th>Status</th><th>Actions</th>
-          </tr></thead>
-          <tbody id="products-tbody"></tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- ===== RESTOCK ===== -->
-    <section id="tab-stock" class="tab">
-      <div class="tab-header">
-        <h2>Stock Receipts</h2>
-        <button class="btn-primary" onclick="openModal('stock-modal')">+ Record Restock</button>
-      </div>
-      <div class="table-wrap">
-        <table id="stock-table">
-          <thead><tr>
-            <th>Date</th><th>Product</th><th>Supplier</th>
-            <th>Qty</th><th class="money">Unit Cost</th><th class="money">Total</th>
-            <th>Invoice Ref</th><th>Actions</th>
-          </tr></thead>
-          <tbody id="stock-tbody"></tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- ===== CUSTOMERS ===== -->
-    <section id="tab-customers" class="tab">
-      <div class="tab-header">
-        <h2>Customers</h2>
-        <button class="btn-primary" onclick="openModal('customer-modal')">+ Add Customer</button>
-      </div>
-      <div class="table-wrap">
-        <table id="customers-table">
-          <thead><tr>
-            <th>Name</th><th>Phone</th><th>Email</th><th>Since</th><th>Notes</th><th>Actions</th>
-          </tr></thead>
-          <tbody id="customers-tbody"></tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- ===== SUPPLIERS ===== -->
-    <section id="tab-suppliers" class="tab">
-      <div class="tab-header">
-        <h2>Suppliers</h2>
-        <button class="btn-primary" onclick="openModal('supplier-modal')">+ Add Supplier</button>
-      </div>
-      <div class="table-wrap">
-        <table id="suppliers-table">
-          <thead><tr>
-            <th>Name</th><th>Phone</th><th>Email</th><th>Address</th><th>Notes</th><th>Actions</th>
-          </tr></thead>
-          <tbody id="suppliers-tbody"></tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- ===== EXPENSES ===== -->
-    <section id="tab-expenses" class="tab">
-      <div class="tab-header">
-        <h2>Expenses</h2>
-        <button class="btn-primary" onclick="openModal('expense-modal')">+ Add Expense</button>
-      </div>
-      <div class="table-wrap">
-        <table id="expenses-table">
-          <thead><tr>
-            <th>Date</th><th>Category</th><th>Description</th>
-            <th>Paid By</th><th>Reference</th><th class="money">Amount</th><th>Actions</th>
-          </tr></thead>
-          <tbody id="expenses-tbody"></tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- ===== STAFF ===== -->
-    <section id="tab-staff" class="tab">
-      <div class="tab-header">
-        <h2>Staff</h2>
-        <button class="btn-primary" onclick="openModal('staff-modal')">+ Add Staff</button>
-      </div>
-      <div class="table-wrap">
-        <table id="staff-table">
-          <thead><tr>
-            <th>Name</th><th>Role</th><th>Phone</th><th>ID No.</th>
-            <th class="money">Monthly Salary</th><th>Status</th><th>Actions</th>
-          </tr></thead>
-          <tbody id="staff-tbody"></tbody>
-        </table>
-      </div>
-      <div class="table-footer" id="staff-total"></div>
-    </section>
-
-    <!-- ===== REPORTS ===== -->
-    <section id="tab-report" class="tab">
-      <div class="tab-header">
-        <h2>Monthly Report</h2>
-        <div class="report-controls">
-          <select id="report-month"></select>
-          <select id="report-year"></select>
-          <button class="btn-primary" onclick="loadReport()">Generate</button>
-          <button class="btn-secondary" onclick="exportReportPdf()">🖨 Export PDF</button>
-          <button class="btn-secondary" onclick="exportReportCsv()">⬇ Export CSV</button>
-        </div>
-      </div>
-      <div id="report-content"><p class="muted">Select a month and click Generate.</p></div>
-    </section>
-
-    <!-- ===== SETTINGS ===== -->
-    <section id="tab-settings" class="tab">
-      <div class="tab-header"><h2>Settings</h2></div>
-      <div class="settings-card">
-        <h3>Shop Details</h3>
-        <form id="settings-form" onsubmit="saveSettings(event)">
-          <label>Shop Name <input type="text" id="set-name" required /></label>
-          <label>M-Pesa Number
-            <input type="text" id="set-mpesa" required placeholder="e.g. 0723432205" />
-            <span class="field-hint">This number is shown to customers when they pay via M-Pesa</span>
-          </label>
-          <div class="modal-actions" style="justify-content:flex-start;margin-top:4px">
-            <button type="submit" class="btn-primary">Save Settings</button>
-          </div>
-        </form>
-      </div>
-    </section>
-
-  </main>
+    </main>
+  </div><!-- /shell -->
 
   <!-- ================================================================
-       MODALS
+       MODALS  (unchanged)
        ================================================================ -->
 
   <!-- Add / Edit Product -->
@@ -304,9 +378,7 @@
         <input type="hidden" id="pm-id" value="0" />
         <label>Product Name <input type="text" id="pm-name" required /></label>
         <div class="form-row">
-          <label>Category
-            <select id="pm-category"></select>
-          </label>
+          <label>Category <select id="pm-category"></select></label>
           <label>Brand <input type="text" id="pm-brand" placeholder="e.g. L'Oreal" /></label>
         </div>
         <label>SKU / Barcode <input type="text" id="pm-sku" placeholder="Optional" /></label>
@@ -370,14 +442,8 @@
       <h3>Record Stock Receipt</h3>
       <form id="stock-form" onsubmit="submitStock(event)">
         <label>Date <input type="date" id="stk-date" required /></label>
-        <label>Product
-          <select id="stk-product" required></select>
-        </label>
-        <label>Supplier
-          <select id="stk-supplier">
-            <option value="0">-- Select Supplier --</option>
-          </select>
-        </label>
+        <label>Product <select id="stk-product" required></select></label>
+        <label>Supplier <select id="stk-supplier"><option value="0">-- Select Supplier --</option></select></label>
         <div class="form-row">
           <label>Qty Received <input type="number" id="stk-qty" min="1" value="1" required /></label>
           <label>Unit Cost (KSh) <input type="number" id="stk-cost" min="0" step="0.01" required /></label>
@@ -398,16 +464,12 @@
       <h3>Add Expense</h3>
       <form id="expense-form" onsubmit="submitExpense(event)">
         <label>Date <input type="date" id="ex-date" required /></label>
-        <label>Category
-          <select id="ex-category"></select>
-        </label>
+        <label>Category <select id="ex-category"></select></label>
         <label>Description <input type="text" id="ex-desc" /></label>
         <label>Amount (KSh) <input type="number" id="ex-amount" min="0" step="0.01" required /></label>
         <label>Paid By
           <select id="ex-paidby">
-            <option>Cash</option>
-            <option>MPesa</option>
-            <option>Bank</option>
+            <option>Cash</option><option>MPesa</option><option>Bank</option>
           </select>
         </label>
         <label>Reference / Receipt No. <input type="text" id="ex-ref" /></label>
@@ -454,7 +516,7 @@
     </div>
   </div>
 
-  <!-- Sale Detail / Receipt View -->
+  <!-- Sale Detail -->
   <div id="sale-detail-modal" class="modal-overlay" role="dialog" aria-modal="true">
     <div class="modal">
       <h3>Sale Receipt</h3>
@@ -465,13 +527,10 @@
     </div>
   </div>
 
-  <!-- ===== RECEIPT PRINT MODAL ===== -->
+  <!-- Receipt Print Modal -->
   <div id="receipt-modal" class="modal-overlay" role="dialog" aria-modal="true">
     <div class="modal modal-receipt">
-      <!-- This inner div is what gets printed -->
-      <div id="receipt-printable">
-        <!-- Populated by JS -->
-      </div>
+      <div id="receipt-printable"></div>
       <div class="modal-actions receipt-actions no-print">
         <button class="btn-primary" onclick="printReceipt()">🖨️ Print Receipt</button>
         <button class="btn-secondary" onclick="closeModal('receipt-modal')">Close</button>
@@ -479,7 +538,7 @@
     </div>
   </div>
 
-  <!-- M-Pesa Payment Prompt -->
+  <!-- M-Pesa -->
   <div id="mpesa-modal" class="modal-overlay" role="dialog" aria-modal="true">
     <div class="modal modal-sm">
       <div class="mpesa-header">
@@ -525,5 +584,23 @@
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
   <script src="/js/app.js"></script>
+  <script>
+    // Sidebar toggle for mobile
+    document.getElementById('sidebar-toggle').addEventListener('click', function() {
+      document.getElementById('sidebar').classList.toggle('open');
+      document.getElementById('sidebar-overlay').classList.toggle('open');
+    });
+    document.getElementById('sidebar-overlay').addEventListener('click', function() {
+      document.getElementById('sidebar').classList.remove('open');
+      this.classList.remove('open');
+    });
+    // Close sidebar on nav click (mobile)
+    document.querySelectorAll('.nav-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        document.getElementById('sidebar').classList.remove('open');
+        document.getElementById('sidebar-overlay').classList.remove('open');
+      });
+    });
+  </script>
 </body>
 </html>
