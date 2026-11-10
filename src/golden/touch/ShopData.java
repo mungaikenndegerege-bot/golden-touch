@@ -24,6 +24,8 @@ public class ShopData {
         public String description;
         public double costPrice;     // what we paid the supplier
         public double sellingPrice;  // what we charge customers
+        public double wholesalePrice;   // lower price for bulk buyers
+        public int    wholesaleMinQty;  // wholesale applies when qty >= this
         public int stockQty;
         public int lowStockThreshold; // alert when stock falls below this
         public boolean active;       // false = archived/discontinued
@@ -234,6 +236,8 @@ public class ShopData {
         if (data.shopName      == null) data.shopName      = "Golden Touch";
         for (Product p : data.products) {
             if (p.lowStockThreshold == 0) p.lowStockThreshold = 5;
+            if (p.wholesalePrice == 0) p.wholesalePrice = p.sellingPrice;
+            if (p.wholesaleMinQty == 0) p.wholesaleMinQty = 1;
         }
         for (Sale s : data.sales) {
             if (s.items == null) s.items = new ArrayList<>();

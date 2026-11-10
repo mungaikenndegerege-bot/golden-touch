@@ -67,6 +67,8 @@ public class ShopApiServer {
             p.description   = body.has("description") ? body.get("description").asText("").trim() : "";
             p.costPrice     = body.get("costPrice").asDouble(0);
             p.sellingPrice  = body.get("sellingPrice").asDouble(0);
+            p.wholesalePrice  = body.has("wholesalePrice")  ? body.get("wholesalePrice").asDouble(p.sellingPrice)  : p.sellingPrice;
+            p.wholesaleMinQty = body.has("wholesaleMinQty") ? body.get("wholesaleMinQty").asInt(1) : 1;
             p.stockQty      = body.get("stockQty").asInt(0);
             p.lowStockThreshold = body.has("lowStockThreshold") ? body.get("lowStockThreshold").asInt(5) : 5;
             p.active        = true;
@@ -87,6 +89,8 @@ public class ShopApiServer {
             if (body.has("description"))       p.description   = body.get("description").asText("").trim();
             if (body.has("costPrice"))         p.costPrice     = body.get("costPrice").asDouble(0);
             if (body.has("sellingPrice"))      p.sellingPrice  = body.get("sellingPrice").asDouble(0);
+            if (body.has("wholesalePrice"))  p.wholesalePrice  = body.get("wholesalePrice").asDouble(0);
+            if (body.has("wholesaleMinQty")) p.wholesaleMinQty = body.get("wholesaleMinQty").asInt(1);
             if (body.has("stockQty"))          p.stockQty      = body.get("stockQty").asInt(0);
             if (body.has("lowStockThreshold")) p.lowStockThreshold = body.get("lowStockThreshold").asInt(5);
             if (body.has("active"))            p.active        = body.get("active").asBoolean(true);
@@ -669,6 +673,8 @@ public class ShopApiServer {
         n.put("sku", p.sku == null ? "" : p.sku);
         n.put("description", p.description == null ? "" : p.description);
         n.put("costPrice", p.costPrice); n.put("sellingPrice", p.sellingPrice);
+        n.put("wholesalePrice",  p.wholesalePrice);
+        n.put("wholesaleMinQty", p.wholesaleMinQty);
         n.put("stockQty", p.stockQty); n.put("lowStockThreshold", p.lowStockThreshold);
         n.put("active", p.active);
         return n;

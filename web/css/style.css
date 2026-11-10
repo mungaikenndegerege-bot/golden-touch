@@ -917,3 +917,75 @@ body.light .nav-divider{ color: rgba(26,10,20,.35); }
 
   @page { margin: 6mm 4mm; size: 80mm auto; }
 }
+
+/* -- Wholesale / Retail customer-type toggle (POS) -- */
+.customer-type-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.customer-type-label {
+  font-size: .82rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+.customer-type-btns {
+  display: flex;
+  gap: 4px;
+}
+.ctype-btn {
+  padding: 5px 16px;
+  border: 1.5px solid var(--glass-border-strong);
+  border-radius: var(--radius-pill);
+  background: var(--glass-bg);
+  color: var(--text-primary);
+  font-size: .82rem;
+  cursor: pointer;
+  transition: background .18s, border-color .18s, color .18s;
+}
+.ctype-btn.active {
+  background: linear-gradient(135deg, #0891b2, #06b6d4);
+  border-color: #06b6d4;
+  color: #fff;
+  font-weight: 600;
+}
+.ctype-btn:hover:not(.active) {
+  background: var(--glass-bg-md);
+}
+
+/* -- Wholesale badge on POS product cards -- */
+.pos-card-wholesale {
+  display: inline-block;
+  background: #0891b2;
+  color: #fff;
+  font-size: .65rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  padding: 2px 7px;
+  border-radius: var(--radius-pill);
+  margin-left: 4px;
+  vertical-align: middle;
+  text-transform: uppercase;
+}
+
+/* -- Wholesale badge on receipt items -- */
+.wholesale-badge {
+  display: inline-block;
+  background: rgba(8, 145, 178, .18);
+  color: #06b6d4;
+  border: 1px solid rgba(6, 182, 212, .40);
+  font-size: .62rem;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: var(--radius-pill);
+  margin-left: 5px;
+  vertical-align: middle;
+}
+
+/* hint text inside product modal label */
+.hint-text {
+  font-size: .75rem;
+  color: var(--text-secondary);
+  font-weight: 400;
+}

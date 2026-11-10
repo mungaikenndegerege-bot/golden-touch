@@ -18,6 +18,7 @@ let settings   = { mpesaNumber: '0723432205', shopName: 'Golden Touch' };
 
 let cart       = [];          // POS cart items
 let posPayment = 'Cash';      // currently selected payment method
+let posCustomerType = 'retail';   // 'retail' or 'wholesale'
 let pendingSaleData = null;   // holds sale payload while mpesa modal is open
 
 // ── Init ───────────────────────────────────────────────────────────────
@@ -307,6 +308,8 @@ function openAddProduct() {
   document.getElementById('pm-price').value = '';
   document.getElementById('pm-stock').value = '0';
   document.getElementById('pm-lowstock').value = '5';
+  document.getElementById('prod-wholesale-price').value   = '';
+  document.getElementById('prod-wholesale-min-qty').value = '1';
   openModal('product-modal');
 }
 
@@ -324,6 +327,8 @@ function editProduct(id) {
   document.getElementById('pm-price').value    = p.sellingPrice;
   document.getElementById('pm-stock').value    = p.stockQty;
   document.getElementById('pm-lowstock').value = p.lowStockThreshold;
+  document.getElementById('prod-wholesale-price').value   = p.wholesalePrice   || '';
+  document.getElementById('prod-wholesale-min-qty').value = p.wholesaleMinQty  || 1;
   openModal('product-modal');
 }
 
@@ -338,6 +343,8 @@ async function submitProduct(e) {
     description:       document.getElementById('pm-desc').value.trim(),
     costPrice:         parseFloat(document.getElementById('pm-cost').value)  || 0,
     sellingPrice:      parseFloat(document.getElementById('pm-price').value) || 0,
+    wholesalePrice:    parseFloat(document.getElementById('prod-wholesale-price').value) || 0,
+    wholesaleMinQty:   parseInt(document.getElementById('prod-wholesale-min-qty').value)  || 1,
     stockQty:          parseInt(document.getElementById('pm-stock').value)   || 0,
     lowStockThreshold: parseInt(document.getElementById('pm-lowstock').value)|| 5,
   };
@@ -397,13 +404,15 @@ function renderPosGrid() {
   grid.innerHTML = list.map(p => {
     const oos = p.stockQty === 0;
     const low = !oos && p.stockQty <= p.lowStockThreshold;
+    const displayPrice = (posCustomerType === 'wholesale') ? p.wholesalePrice : p.sellingPrice;
+    const wholesaleBadge = (posCustomerType === 'wholesale') ? '<span class="pos-card-wholesale">WHOLESALE</span>' : '';
     return `<div class="pos-product-card${oos ? ' out-of-stock' : ''}"
                onclick="${oos ? '' : `addToCart(${p.id})`}"
                title="${oos ? 'Out of stock' : 'Click to add to cart'}">
       <div class="pos-card-category">${esc(p.category)}</div>
       <div class="pos-card-name">${esc(p.name)}</div>
       ${p.brand ? `<div style="font-size:.75rem;color:var(--text-secondary)">${esc(p.brand)}</div>` : ''}
-      <div class="pos-card-price">${fmt(p.sellingPrice)}</div>
+      <div class="pos-card-price">${fmt(displayPrice)}${wholesaleBadge}</div>
       <div class="pos-card-stock ${oos ? 'none' : low ? 'low' : ''}">
         ${oos ? '🚫 Out of stock' : low ? `⚠️ Only ${p.stockQty} left` : `${p.stockQty} in stock`}
       </div>
@@ -412,6 +421,13 @@ function renderPosGrid() {
 }
 
 function filterPosProducts() { renderPosGrid(); }
+
+function selectCustomerType(type) {
+  posCustomerType = type;
+  document.getElementById('ctype-retail').classList.toggle('active', type === 'retail');
+  document.getElementById('ctype-wholesale').classList.toggle('active', type === 'wholesale');
+  renderPosGrid();
+}
 
 function addToCart(productId) {
   const p = products.find(x => x.id === productId);
@@ -423,7 +439,8 @@ function addToCart(productId) {
     }
     existing.qty++;
   } else {
-    cart.push({ productId, productName: p.name, qty: 1, unitPrice: p.sellingPrice });
+    const unitPrice = (posCustomerType === 'wholesale') ? p.wholesalePrice : p.sellingPrice;
+    cart.push({ productId, productName: p.name, qty: 1, unitPrice });
   }
   renderCart();
 }
@@ -618,13 +635,18 @@ function buildReceiptHTML(s) {
   const printedAt = now.toLocaleDateString('en-KE', { day:'2-digit', month:'short', year:'numeric' })
                   + ' ' + now.toTimeString().slice(0, 5);
 
-  const itemRows = (s.items || []).map(i => `
+  const itemRows = (s.items || []).map(i => {
+    const prod = products.find(x => x.id === i.productId);
+    const isWholesale = prod && i.unitPrice < prod.sellingPrice && i.unitPrice > 0;
+    const wTag = isWholesale ? '<span class="wholesale-badge">Wholesale</span>' : '';
+    return `
     <tr>
-      <td class="r-name">${esc(i.productName)}</td>
+      <td class="r-name">${esc(i.productName)}${wTag}</td>
       <td class="r-qty">${i.qty}</td>
       <td class="r-price">${fmtR(i.unitPrice)}</td>
       <td class="r-total">${fmtR(i.lineTotal)}</td>
-    </tr>`).join('');
+    </tr>`;
+  }).join('');
 
   const payLine = s.paymentMethod === 'MPesa'
     ? 'M-Pesa'

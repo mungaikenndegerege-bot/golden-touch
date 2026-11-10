@@ -161,6 +161,13 @@
         </div>
         <div class="pos-layout">
           <div class="pos-left">
+            <div class="customer-type-row">
+              <span class="customer-type-label">Customer Type:</span>
+              <div class="customer-type-btns">
+                <button class="ctype-btn active" id="ctype-retail" onclick="selectCustomerType('retail')">Retail</button>
+                <button class="ctype-btn" id="ctype-wholesale" onclick="selectCustomerType('wholesale')">Wholesale</button>
+              </div>
+            </div>
             <div class="pos-search-bar">
               <input type="text" id="pos-search" placeholder="🔍 Search products by name, brand, category…" oninput="filterPosProducts()" />
               <select id="pos-cat-filter" onchange="filterPosProducts()">
@@ -386,6 +393,16 @@
         <div class="form-row">
           <label>Cost Price (KSh) <input type="number" id="pm-cost" min="0" step="0.01" required /></label>
           <label>Selling Price (KSh) <input type="number" id="pm-price" min="0" step="0.01" required /></label>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Wholesale Price (KSh)</label>
+            <input type="number" id="prod-wholesale-price" min="0" step="0.01" placeholder="0.00" />
+          </div>
+          <div class="form-group">
+            <label>Wholesale Min Qty <span class="hint-text">wholesale price applies when qty &ge; this</span></label>
+            <input type="number" id="prod-wholesale-min-qty" min="1" step="1" value="1" />
+          </div>
         </div>
         <div class="form-row">
           <label>Stock Qty <input type="number" id="pm-stock" min="0" step="1" value="0" required /></label>
