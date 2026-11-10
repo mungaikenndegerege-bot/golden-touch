@@ -132,8 +132,7 @@ public class ShopApiServer {
             sale.mpesaPhone    = body.has("mpesaPhone") ? body.get("mpesaPhone").asText("").trim() : "";
             sale.notes         = body.has("notes")      ? body.get("notes").asText("").trim()      : "";
             sale.voided        = false;
-
-            // Parse items and deduct stock
+            sale.saleType      = body.has("saleType") ? body.get("saleType").asText("retail").trim() : "retail";
             if (!body.has("items") || !body.get("items").isArray()) {
                 ctx.status(400).result("items array required"); return;
             }
@@ -338,6 +337,39 @@ public class ShopApiServer {
             ctx.result("Deleted");
         });
 
+        app.put("/api/stock/{id}", ctx -> {
+            int id = Integer.parseInt(ctx.pathParam("id"));
+            StockReceipt r = null;
+            for (StockReceipt x : ShopData.get().stockReceipts) if (x.id == id) { r = x; break; }
+            if (r == null) { ctx.status(404).result("Not found"); return; }
+            ObjectNode body = ctx.bodyAsClass(ObjectNode.class);
+            if (body.has("date"))       r.date       = LocalDate.parse(body.get("date").asText());
+            if (body.has("supplierId")) {
+                r.supplierId = body.get("supplierId").asInt(0);
+                if (r.supplierId > 0) {
+                    Supplier sup = ShopData.findSupplier(r.supplierId);
+                    if (sup != null) r.supplierName = sup.name;
+                }
+            }
+            if (body.has("unitCost"))   r.unitCost   = body.get("unitCost").asDouble(0);
+            if (body.has("invoiceRef")) r.invoiceRef = body.get("invoiceRef").asText("").trim();
+            if (body.has("notes"))      r.notes      = body.get("notes").asText("").trim();
+            // Handle qty change — reverse old qty, apply new qty
+            if (body.has("qty")) {
+                int newQty = body.get("qty").asInt(r.qty);
+                if (newQty != r.qty) {
+                    Product p = ShopData.findProduct(r.productId);
+                    if (p != null) {
+                        p.stockQty = Math.max(0, p.stockQty - r.qty); // reverse old
+                        p.stockQty += newQty;                          // apply new
+                    }
+                    r.qty = newQty;
+                }
+            }
+            ShopData.save();
+            ctx.result("Updated");
+        });
+
         // ===================================================================
         //  EXPENSES
         // ===================================================================
@@ -369,6 +401,22 @@ public class ShopApiServer {
             if (!removed) { ctx.status(404).result("Not found"); return; }
             ShopData.save();
             ctx.result("Deleted");
+        });
+
+        app.put("/api/expenses/{id}", ctx -> {
+            int id = Integer.parseInt(ctx.pathParam("id"));
+            Expense e = null;
+            for (Expense x : ShopData.get().expenses) if (x.id == id) { e = x; break; }
+            if (e == null) { ctx.status(404).result("Not found"); return; }
+            ObjectNode body = ctx.bodyAsClass(ObjectNode.class);
+            if (body.has("date"))        e.date        = LocalDate.parse(body.get("date").asText());
+            if (body.has("category"))    e.category    = body.get("category").asText().trim();
+            if (body.has("description")) e.description = body.get("description").asText("").trim();
+            if (body.has("amount"))      e.amount      = body.get("amount").asDouble(0);
+            if (body.has("paidBy"))      e.paidBy      = body.get("paidBy").asText("Cash").trim();
+            if (body.has("reference"))   e.reference   = body.get("reference").asText("").trim();
+            ShopData.save();
+            ctx.result("Updated");
         });
 
         // ===================================================================
@@ -507,6 +555,13 @@ public class ShopApiServer {
             }
             for (Expense e : d.expenses) if (inMonth(e.date, now)) monthExpenses += e.amount;
 
+            double monthRetailRevenue = 0, monthWholesaleRevenue = 0;
+            for (Sale s : d.sales) {
+                if (s.voided || !inMonth(s.date, now)) continue;
+                if ("wholesale".equals(s.saleType)) monthWholesaleRevenue += s.total();
+                else monthRetailRevenue += s.total();
+            }
+
             // Payroll this month
             double authorisedPayroll = 0;
             String nowKey = now.toString();
@@ -566,6 +621,8 @@ public class ShopApiServer {
             result.put("monthPayroll",       authorisedPayroll);
             result.put("monthPendingPayroll",pendingPayroll);
             result.put("monthNet",           grossProfit - monthExpenses - authorisedPayroll);
+            result.put("monthRetailRevenue",    monthRetailRevenue);
+            result.put("monthWholesaleRevenue", monthWholesaleRevenue);
             result.put("totalProducts",      d.products.size());
             result.put("totalCustomers",     d.customers.size());
             result.put("currentMonth",       now.toString());
@@ -692,6 +749,7 @@ public class ShopApiServer {
         n.put("mpesaPhone", s.mpesaPhone == null ? "" : s.mpesaPhone);
         n.put("notes", s.notes == null ? "" : s.notes);
         n.put("voided", s.voided);
+        n.put("saleType", s.saleType != null ? s.saleType : "retail");
         n.put("subtotal", s.subtotal());
         n.put("total", s.total());
         ArrayNode items = JSON.createArrayNode();

@@ -129,6 +129,16 @@
           <button class="btn-primary btn-sm" onclick="openModal('payroll-modal')">🔐 Authorise Payroll</button>
         </div>
 
+        <!-- Pricing Summary -->
+        <div id="pricing-summary" class="pricing-summary">
+          <h3>💰 Sales Type Breakdown — This Month</h3>
+          <table class="simple-table">
+            <tr><td>Retail Sales</td><td class="money pos" id="ps-retail">—</td></tr>
+            <tr><td>Wholesale Sales</td><td class="money" style="color:var(--teal,#14b8a6)" id="ps-wholesale">—</td></tr>
+            <tr class="total-row"><td>Total Revenue</td><td class="money" id="ps-total">—</td></tr>
+          </table>
+        </div>
+
         <div class="dash-row">
           <div class="dash-box">
             <h3>📊 This Month Breakdown</h3>
@@ -222,7 +232,7 @@
           <table id="sales-table">
             <thead><tr>
               <th>#</th><th>Date</th><th>Time</th><th>Customer</th>
-              <th>Items</th><th>Payment</th><th class="money">Total</th><th>Status</th><th>Actions</th>
+              <th>Items</th><th>Type</th><th>Payment</th><th class="money">Total</th><th>Status</th><th>Actions</th>
             </tr></thead>
             <tbody id="sales-tbody"></tbody>
           </table>
@@ -581,6 +591,57 @@
         <div class="modal-actions">
           <button type="submit" class="btn-primary">✅ Confirm &amp; Complete Sale</button>
           <button type="button" class="btn-secondary" onclick="closeModal('mpesa-modal')">Back</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Stock Receipt -->
+  <div id="stock-edit-modal" class="modal-overlay" role="dialog" aria-modal="true">
+    <div class="modal modal-sm">
+      <h3>Edit Stock Receipt</h3>
+      <form id="stock-edit-form" onsubmit="submitStockEdit(event)">
+        <input type="hidden" id="sek-id" value="0" />
+        <label>Product <input type="text" id="sek-product-name" readonly style="background:rgba(255,255,255,.05);cursor:default" /></label>
+        <label>Date <input type="date" id="sek-date" required /></label>
+        <label>Supplier
+          <select id="sek-supplier"><option value="0">-- Select Supplier --</option></select>
+        </label>
+        <div class="form-row">
+          <label>Qty Received <input type="number" id="sek-qty" min="1" required /></label>
+          <label>Unit Cost (KSh) <input type="number" id="sek-cost" min="0" step="0.01" required /></label>
+        </div>
+        <label>Invoice / Reference <input type="text" id="sek-ref" /></label>
+        <label>Notes <input type="text" id="sek-notes" /></label>
+        <div class="modal-actions">
+          <button type="submit" class="btn-primary">Save Changes</button>
+          <button type="button" class="btn-secondary" onclick="closeModal('stock-edit-modal')">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Expense -->
+  <div id="expense-edit-modal" class="modal-overlay" role="dialog" aria-modal="true">
+    <div class="modal modal-sm">
+      <h3>Edit Expense</h3>
+      <form id="expense-edit-form" onsubmit="submitExpenseEdit(event)">
+        <input type="hidden" id="eek-id" value="0" />
+        <label>Date <input type="date" id="eek-date" required /></label>
+        <label>Category
+          <select id="eek-category"></select>
+        </label>
+        <label>Description <input type="text" id="eek-desc" /></label>
+        <label>Amount (KSh) <input type="number" id="eek-amount" min="0" step="0.01" required /></label>
+        <label>Paid By
+          <select id="eek-paidby">
+            <option>Cash</option><option>MPesa</option><option>Bank</option>
+          </select>
+        </label>
+        <label>Reference / Receipt No. <input type="text" id="eek-ref" /></label>
+        <div class="modal-actions">
+          <button type="submit" class="btn-primary">Save Changes</button>
+          <button type="button" class="btn-secondary" onclick="closeModal('expense-edit-modal')">Cancel</button>
         </div>
       </form>
     </div>

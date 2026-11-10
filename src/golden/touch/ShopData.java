@@ -56,6 +56,7 @@ public class ShopData {
         public String mpesaPhone;    // payer phone if MPesa
         public String notes;
         public boolean voided;
+        public String saleType;  // "retail" or "wholesale"
 
         public double subtotal() {
             double s = 0;
@@ -241,6 +242,7 @@ public class ShopData {
         }
         for (Sale s : data.sales) {
             if (s.items == null) s.items = new ArrayList<>();
+            if (s.saleType == null) s.saleType = "retail";
         }
         for (Staff s : data.staff) {
             if (s.idNumber == null) s.idNumber = "";

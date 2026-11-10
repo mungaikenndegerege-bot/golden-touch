@@ -197,6 +197,13 @@ async function loadDashboard() {
     document.getElementById('db-pending').textContent  = fmt(d.monthPendingPayroll);
     document.getElementById('db-net').textContent      = fmt(d.monthNet);
 
+    // Pricing summary
+    if (document.getElementById('ps-retail')) {
+      document.getElementById('ps-retail').textContent    = fmt(d.monthRetailRevenue    || 0);
+      document.getElementById('ps-wholesale').textContent = fmt(d.monthWholesaleRevenue || 0);
+      document.getElementById('ps-total').textContent     = fmt(d.monthRevenue);
+    }
+
     // Payroll notice
     const notice = document.getElementById('payroll-notice');
     const noticeText = document.getElementById('payroll-notice-text');
@@ -525,6 +532,7 @@ async function checkoutSale() {
     time:          nowTime(),
     customerId:    custId,
     customerName:  custId > 0 ? custName : 'Walk-in',
+    saleType:      posCustomerType,
     discount,
     paymentMethod: posPayment,
     mpesaCode:     '',
@@ -590,7 +598,7 @@ function renderSales() {
   if (dateFilter) list = list.filter(s => s.date === dateFilter);
 
   if (list.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="9" class="empty-state">No sales found.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="10" class="empty-state">No sales found.</td></tr>`;
     return;
   }
   tbody.innerHTML = list.map(s => {
@@ -608,6 +616,7 @@ function renderSales() {
       <td style="color:var(--text-secondary)">${s.time || '—'}</td>
       <td>${esc(s.customerName)}</td>
       <td style="color:var(--text-secondary)">${s.items ? s.items.length : 0} item(s)</td>
+      <td>${s.saleType === 'wholesale' ? '<span class="badge badge-teal">Wholesale</span>' : '<span class="badge badge-pink" style="background:rgba(244,114,182,.18);color:var(--pink)">Retail</span>'}</td>
       <td>${payBadge}${s.mpesaCode ? `<br><small style="color:var(--text-secondary)">${esc(s.mpesaCode)}</small>` : ''}</td>
       <td class="money ${s.voided ? '' : 'pos'}" style="${s.voided ? 'text-decoration:line-through;color:var(--text-secondary)' : ''}">${fmt(s.total)}</td>
       <td>${badge}</td>
@@ -615,6 +624,7 @@ function renderSales() {
         <button class="btn-icon" onclick="viewSaleDetail(${s.id})" title="View receipt">👁️</button>
         <button class="btn-icon" onclick="showReceiptModal(sales.find(x=>x.id===${s.id}))" title="Print receipt">🖨️</button>
         ${!s.voided ? `<button class="btn-icon" onclick="confirmDelete('Void sale #${s.id}?', () => voidSale(${s.id}))" title="Void sale">🚫</button>` : ''}
+        <button class="btn-icon" onclick="confirmDelete('Delete sale #${s.id}? This will restore stock.', () => deleteSale(${s.id}))" title="Delete sale">🗑️</button>
       </td>
     </tr>`;
   }).join('');
@@ -725,6 +735,16 @@ async function voidSale(id) {
   try {
     await api('PUT', '/api/sales/' + id + '/void');
     showToast('Sale voided — stock restored');
+    await loadSales();
+    await loadProducts();
+    renderPosGrid();
+  } catch (err) { showToast('Error: ' + err.message, 'error'); }
+}
+
+async function deleteSale(id) {
+  try {
+    await api('DELETE', '/api/sales/' + id);
+    showToast('Sale deleted — stock restored');
     await loadSales();
     await loadProducts();
     renderPosGrid();
@@ -888,6 +908,7 @@ function renderStock() {
     <td class="money pos">${fmt(r.totalCost)}</td>
     <td style="color:var(--text-secondary);font-size:.82rem">${esc(r.invoiceRef)}</td>
     <td>
+      <button class="btn-icon btn-edit" onclick="editStock(${r.id})" title="Edit">✏️</button>
       <button class="btn-icon" onclick="confirmDelete('Delete this stock receipt?', () => deleteStock(${r.id}))" title="Delete">🗑️</button>
     </td>
   </tr>`).join('');
