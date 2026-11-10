@@ -678,6 +678,7 @@ function buildReceiptHTML(s) {
         <div><span class="r-label">Date</span><span class="r-val">${s.date} ${s.time || ''}</span></div>
         <div><span class="r-label">Customer</span><span class="r-val">${esc(s.customerName)}</span></div>
         <div><span class="r-label">Payment</span><span class="r-val">${payLine}</span></div>
+        <div><span class="r-label">Type</span><span class="r-val">${(s.saleType || 'retail').charAt(0).toUpperCase() + (s.saleType || 'retail').slice(1)}</span></div>
         ${s.voided ? '<div class="r-voided">⚠ VOIDED ⚠</div>' : ''}
       </div>
 
@@ -985,6 +986,50 @@ async function deleteStock(id) {
   } catch (err) { showToast('Error: ' + err.message, 'error'); }
 }
 
+function editStock(id) {
+  const r = stockList.find(x => x.id === id);
+  if (!r) return;
+  document.getElementById('sek-id').value           = r.id;
+  document.getElementById('sek-product-name').value = r.productName;
+  document.getElementById('sek-date').value          = r.date;
+  document.getElementById('sek-qty').value           = r.qty;
+  document.getElementById('sek-cost').value          = r.unitCost;
+  document.getElementById('sek-ref').value           = r.invoiceRef  || '';
+  document.getElementById('sek-notes').value         = r.notes       || '';
+  // Populate supplier dropdown
+  const sel = document.getElementById('sek-supplier');
+  sel.innerHTML = '<option value="0">-- Select Supplier --</option>';
+  suppliers.forEach(s => {
+    const opt = document.createElement('option');
+    opt.value = s.id; opt.textContent = s.name;
+    if (s.id === r.supplierId) opt.selected = true;
+    sel.appendChild(opt);
+  });
+  openModal('stock-edit-modal');
+}
+
+async function submitStockEdit(e) {
+  e.preventDefault();
+  const id      = parseInt(document.getElementById('sek-id').value);
+  const suppId  = parseInt(document.getElementById('sek-supplier').value) || 0;
+  const payload = {
+    date:       document.getElementById('sek-date').value,
+    supplierId: suppId,
+    qty:        parseInt(document.getElementById('sek-qty').value)  || 1,
+    unitCost:   parseFloat(document.getElementById('sek-cost').value) || 0,
+    invoiceRef: document.getElementById('sek-ref').value.trim(),
+    notes:      document.getElementById('sek-notes').value.trim(),
+  };
+  try {
+    await api('PUT', '/api/stock/' + id, payload);
+    showToast('Stock receipt updated', 'success');
+    closeModal('stock-edit-modal');
+    await loadStock();
+    await loadProducts();
+    renderPosGrid();
+  } catch (err) { showToast('Error: ' + err.message, 'error'); }
+}
+
 // ── EXPENSES ───────────────────────────────────────────────────────────
 async function loadExpenses() {
   try { expenses = await api('GET', '/api/expenses'); } catch (e) { expenses = []; }
@@ -1005,6 +1050,7 @@ function renderExpenses() {
     <td style="color:var(--text-secondary);font-size:.82rem">${esc(ex.reference)}</td>
     <td class="money neg">${fmt(ex.amount)}</td>
     <td>
+      <button class="btn-icon btn-edit" onclick="editExpense(${ex.id})" title="Edit">✏️</button>
       <button class="btn-icon" onclick="confirmDelete('Delete this expense?', () => deleteExpense(${ex.id}))" title="Delete">🗑️</button>
     </td>
   </tr>`).join('');
@@ -1040,6 +1086,47 @@ async function deleteExpense(id) {
   try {
     await api('DELETE', '/api/expenses/' + id);
     showToast('Expense deleted');
+    await loadExpenses();
+  } catch (err) { showToast('Error: ' + err.message, 'error'); }
+}
+
+function editExpense(id) {
+  const ex = expenses.find(x => x.id === id);
+  if (!ex) return;
+  document.getElementById('eek-id').value     = ex.id;
+  document.getElementById('eek-date').value   = ex.date;
+  document.getElementById('eek-desc').value   = ex.description || '';
+  document.getElementById('eek-amount').value = ex.amount;
+  document.getElementById('eek-ref').value    = ex.reference   || '';
+  // Populate category select from constants
+  const catSel = document.getElementById('eek-category');
+  catSel.innerHTML = '';
+  constants.expenseCategories.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c; opt.textContent = c;
+    if (c === ex.category) opt.selected = true;
+    catSel.appendChild(opt);
+  });
+  // Set paidBy
+  document.getElementById('eek-paidby').value = ex.paidBy || 'Cash';
+  openModal('expense-edit-modal');
+}
+
+async function submitExpenseEdit(e) {
+  e.preventDefault();
+  const id = parseInt(document.getElementById('eek-id').value);
+  const payload = {
+    date:        document.getElementById('eek-date').value,
+    category:    document.getElementById('eek-category').value,
+    description: document.getElementById('eek-desc').value.trim(),
+    amount:      parseFloat(document.getElementById('eek-amount').value) || 0,
+    paidBy:      document.getElementById('eek-paidby').value,
+    reference:   document.getElementById('eek-ref').value.trim(),
+  };
+  try {
+    await api('PUT', '/api/expenses/' + id, payload);
+    showToast('Expense updated', 'success');
+    closeModal('expense-edit-modal');
     await loadExpenses();
   } catch (err) { showToast('Error: ' + err.message, 'error'); }
 }
